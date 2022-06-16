@@ -7,7 +7,13 @@
 
 #Here is an example of using R as a calculator to perform a numerical operation. 
 
-(3 + 7)^2 - 1*10/444
+(3 + 7)^2 - 1*10/44444
+
+(3 + 7)^2 - 1*10/100000
+
+
+
+
 
 
 

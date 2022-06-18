@@ -1,8 +1,10 @@
 ---
-title: "**Source code for data capture tool and data dictionary**"
+title: '**Source code for data capture tool and data dictionary**'
 author: "B210624"
 date: "`r format (Sys.time (), '%d %B, %Y')`"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}

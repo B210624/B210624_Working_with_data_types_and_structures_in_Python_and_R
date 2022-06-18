@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # https://github.com/B210624/B210624_Working_with_data_types_and_structures_in_Python_and_R.git
 
+
 # **Overview**
 In this assignment, I will load the Hospital length of stay (LOS) data (LOS_model) from the NHSRdatasets package. Next I will shortly see, investigate and tabulate the NHS Hospital length of stay (LOS) data set and save it to my RawData folder. I will then check if the length of stay  is related to some variables. I need variable as indicators for length of stay in hospital. If we can cotrl indcator, we can control the length of stay in hopital. I will then partitioned the data subset into training and testing data and save them to my working ‘Data’ folder, ready for downstream exploratory analysis.
 
@@ -19,11 +20,11 @@ In this assignment, I will load the Hospital length of stay (LOS) data (LOS_mode
 
 The data that you will be managing on the course are from the *NHSRdatasets* package. This package has been created to support skills development in the NHS-R community. 
 
-* **Hospital length of stay (LOS) data (LOS_model)**  Artificially generated hospital data. Fictional patients at ten fictional hospitals, with LOS, age and date status data. Data were generated to learn generalised linear models (GLM) concepts, modelling either death or LOS. 
+* **Hospital length of stay (LOS) data (LOS_model)**  Artificially generated hospital data. Fictional patients at ten fictional hospitals, with LOS, age  and date status data. Data were generated to learn generalised linear models  (GLM) concepts, modelling either death or LOS. 
 
 
 ## Load packages and data
-Let’s load the packages and data needed for this script.
+Let’s load the packages and data needed for this script....
 
 ```{r a,message = FALSE, warning = FALSE}
 library(NHSRdatasets)

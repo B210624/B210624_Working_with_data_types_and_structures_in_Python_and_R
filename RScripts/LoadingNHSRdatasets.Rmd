@@ -10,221 +10,119 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-[My assessment repository:](https://github.com/B210624/B210624_Working_with_data_types_and_structures_in_Python_and_R.git)
-
-# https://github.com/B210624/B210624_Working_with_data_types_and_structures_in_Python_and_R.git
-
-
-# **Overview**
-In this assignment, I will load the Hospital length of stay (LOS) data (LOS_model) from the NHSRdatasets package. Next I will shortly see, investigate and tabulate the NHS Hospital length of stay (LOS) data set and save it to my RawData folder. I will then check if the length of stay  is related to some variables. I need variable as indicators for length of stay in hospital. If we can cotrl indcator, we can control the length of stay in hopital. I will then partitioned the data subset into training and testing data and save them to my working ‘Data’ folder, ready for downstream exploratory analysis.
-
-# **Background**
-
-The data that you will be managing on the course are from the *NHSRdatasets* package. This package has been created to support skills development in the NHS-R community. 
-
-* **Hospital length of stay (LOS) data (LOS_model)**  Artificially generated hospital data. Fictional patients at ten fictional hospitals, with LOS, age  and date status data. Data were generated to learn generalised linear models  (GLM) concepts, modelling either death or LOS. 
-
-
+[My assessment repository:](https://github.com/B210624/B210624_Working_with_data_types_and_structures_in_Python_and_R.git)# https://github.com/B210624/B210624_Working_with_data_types_and_structures_in_Python_and_R.git
 ## Load packages and data
 Let’s load the packages and data needed for this script....
-
 ```{r a,message = FALSE, warning = FALSE}
-library(NHSRdatasets)
-library(tidyverse)
+library(tidyverse) #The *tidyverse* is a collection of R packages designed for  maniplating dataset..
+library(here) #The *here* package is for easy filing in project-centered workflows.
+library(knitr) #*knitr* is an R package that integrates code into text documents.
 ```
+# **Overview**
+In this assignment, I will use and load the Hospital length of stay (LOS) data (LOS_model) from the NHSRdatasets package. I will shortly see, investigate and tabulate the NHS Hospital length of stay (LOS) data set and save it to my RawData folder. I will search variable for later research as indicators for length of stay in hospital. Background: The data are csv.files from the NHSRdatasets package forskills development.
+Hospital length of stay (LOS) data (LOS_model): Artificially generated hospital data. Fictional patients at ten fictional hospitals, with LOS, age and date status data. 
 
-The *tidyverse* is a collection of R packages designed for maniplating  datasets for clearning data.
-
-
+# **NHSRdatasets(Creation)**
 ```{r b,message = FALSE, warning = FALSE}
-library(here)
+library(NHSRdatasets)
 ```
-The *here* package is for easy filing in project-centered workflows.
-
+# **Store the NHS Hospital length of stay (LOS) data set (Storage)**
 ```{r c,message = FALSE, warning = FALSE}
-library(knitr)
+data(LOS_model) #Load the LOS_model data.
+write_csv(LOS_model, here("RawData", "los.csv")) 
+#Here is the code to store theNHS Hospital length of stay (LOS) data set.
 ```
-*knitr* is an R package that integrates code into text documents including PDF and Word documents formats.
-
+## Load the NHS Hospital length of stay (LOS) data set. Here is start of Synthesis
 ```{r d,message = FALSE, warning = FALSE}
-library(scales)
+LOS_CollectedData=read_csv(here("RawData", "los.csv"))
+# I load the NHS Hospital length of stay (LOS) data (LOS_model) from RawData folder.
+glimpse(LOS_CollectedData) #The `glimpse()` function is good to see the columns/variables in a data frame and show data type.
 ```
-The *scales* packages provides the internal scaling infrastructure to visualization 
-
-```{r e,message = FALSE, warning = FALSE}
-library(lubridate)
-```
-
-*lubridate* provides tools for easy manipulationg ofdates in R.
-
-```{r f,message = FALSE, warning = FALSE}
-library(caret)
-```
-The *caret* package (short for Classification And REgression Training) is a set of functions that attempt to streamline the process for creating predictive models. 
-
-# **NHSRdatasets**
-Here is the code to load the five NHSRdatasets from the *NHSRdatasets* R package.
-```{r g,message = FALSE, warning = FALSE}
-#Load the LOS_model data.
-data(LOS_model)
-```
-
-
-# **NHS Hospital length of stay (LOS) data (LOS_model) ** 
-
-In this assignment, I will be focusingon the NHS Hospital length of stay (LOS) data. 
-
-## Let’s have a look at the *NHS Hospital length of stay (LOS) data (LOS_model)
-```{r h,message = FALSE, warning = FALSE}
-data(LOS_model)
-los<-LOS_model
-class(los)
-```
-The tbl_df class is a subclass of data.frame. A data.frame is a table 
-
-```{r i,message = FALSE, warning = FALSE}
-los
-```
-An overview of my data is returned when a tibble is printed to the RStudio console. I can see the los tibble consists of 300 rows of data and 5 columns with different classes. I have one order variable, four  variables (or factors). A factor is a variable used to categorise and store the data, having a limited number of different values. Factors are an important class for exploratory data analysis, visualisation, and statistical analysis with R.
-
+## Overview of my dataset of NHS Hospital length of stay (LOS) data (LOS_model)
+I can see the los tibble consists of 300 rows of data and 5 columns with different classes. I have one order variable and four integer variables (or factors).
 The dataset contains:     
-
 * **ID:** All patients who stay in hospital has individual ID.  
-
-*	**Organisation:** the Organisation is where the patients belong to . The Organisation is a unique code created by NHS  [NHS Digital](_https://www.digitalsocialcare.co.uk/latest-guidance/how-to-find-your-ods-code/). 
-*	**Age:** Age is patient age which is numeric data type and integer by using class  
-
+*	**Organisation:** the Organisation is the fictional hospita; where the patients stay. 
+*	**Age:** Age is patient age which is numeric data type and integer by using class 
 * **Length of stay (LOS) :** the length of stay in hospital means how many days patients stay in hospital.    
-
 *	**Death:** Death means the number of death in hospital.   
 
-## Let's view at the los data
-The `glimpse()` function is good to see the columns/variables in a data frame and show data type.
-
-```{r j,message = FALSE, warning = FALSE}
-glimpse(los) 
-```
-Here is the output of the `glimpse()' function. 
-
-The `head()` function is to see the data at top n rows of a data frame. 
-
-```{r k,message = FALSE, warning = FALSE}
-head(los)
-```
-I can specify the number of rows we want to see in a data frame with the argument “n”. 
-```{r l,message = FALSE, warning = FALSE}
-head(los, n=3)
-```
-In the example above, we used n=3 to look at the first three rows of the ae_attendances data frame.
-
 ## Missing data
-
-It is common when collecting data for some entries to be missing, which can significantly impact. Therefore I need to check for missing data in the los data.   
-
-'map()' is a function for applying a function to each element of a list. The 'is.na' function produces a matrix, consisting of logical values (i.e. TRUE or FALSE), whereby TRUE shows a missing value. 
-```{r n,message = FALSE, warning = FALSE}
-# Calculate how many NAs there are in each variable
-los %>% 
-  map(is.na) %>%
-map(sum)
+```{r e,message = FALSE, warning = FALSE}
+#Calculate how many NAs there are in each variable.
+LOS_CollectedData %>% map(is.na) %>%
+map(sum) # 'map()' is a function for applying a function to each element of a list.
+#The 'is.na' function produces a matrix, consisting of logical values.
 ```
 The data is complete. I do not need to worry about manipulating missing data. 
-
-## I do not need to add the index link colum since ID already exists
-
-## Let's save the raw ae_attendances data to your 'RawData' folder
-I will use the *here* package to build a directory to write the raw ae_attendances data to your 'RawData' folder to save the collected data.
-
-
-```{r q,message = FALSE, warning = FALSE}
-write_csv(los, here("RawData", "los.csv"))
+### Build a data dictionary
+for the data collected by the data capture tool. ##Build a linker data frame Firstly, I build a linker data frame. To do this, we need to create two string vectors representing the different variable descriptions and
+types.
+#Variable descriptions
+```{r f,message = FALSE, warning = FALSE}
+LOS_variable_description <- c("The ID column means that patient IDs which can be linked to the data collected to the original LOS_model data in the 'RawData' folder.",
+"The organsation indicating that fictional hospital codes relates to the place where the patients stay.",
+"The LOS showing length of staying in hosptail. It means how long days the patients stay in hospital.", 
+"The death means that number of patient death as result of patients staying in hospital.",
+"The Age meaning the patients age. It shows that age when the patients start staying in hosptail.")
+print(LOS_variable_description)
+```
+###Variable types
+I have three quantitative values (measured values) variables and one fixed values variables.
+```{r g,message = FALSE, warning = FALSE}
+glimpse(LOS_CollectedData) # I also used to see the data from LOS_CollectedData data frame.
+```
+I have three quantitative values (measured values) variables and one fixed values variables.
+```{r h,message = FALSE, warning = FALSE}
+LOS_variable_type <- c(0,1,0,0,0)
+print(LOS_variable_type)
+#I create a string vector representing the different variable types.
+#It is a vector of integers with values 0 or 1. I need to use 0
+#for a variable with quantitative values (measured values) variables and 1 for fixed values variables.
+```
+Now I use the build_linker() function from the dataMeta package to constructs an intermediary (linker) data frame between the CollectedData and the data dictionary. It requires the LOS_CollectedData data frame
+and LOS_variable_description and LOS_variable_type string vectors.
+```{r i,message = FALSE, warning = FALSE}
+library(dataMeta) #Load the dataMeta to use build linker functon for the connection #for making dictionary.
+linker<-build_linker(LOS_CollectedData,LOS_variable_description,LOS_variable_type)
+print(linker)
+```
+###Making data dictionary
+```{r j,message = FALSE, warning = FALSE}
+LOS_dictionary <- build_dict(my.data = LOS_CollectedData, linker = linker)
+#I use the build_dict() function from the dataMeta to constructs a data dictionary
+#for a LOS_CollectedData data frame with the aid of the linker data frame between.
+glimpse(LOS_dictionary) # Check the dictionary to see how looks like.
 ```
 
-# **Selecting variables for your data capture tool**
-It extremenly important to note the full los  dataset develop my data collection tool. For example, I think that age can be an indicator for length of stay in hospital. Therefore, I selected the age variable of integer. If we reduce the number of older people staying in hospital, we can control the length of stay in hospital.
-
-## Examining the four-hour waiting time target performance for England
-
-We will now use the *dplyr* package `select()` function to select the required variables. The *dplyr* package is loaded by the *tidyverse* package, as one of its core components. dplyr provides a grammar of data manipulation, providing a consistent set of verbs that solve the most common data manipulation challenges.
-
-```{r r,message = FALSE, warning = FALSE}
-los<-los %>% select(ID, Organisation, LOS, Age)
+```{r k,message = FALSE, warning = FALSE}
+# For my next task, it to save LOS_dictionary to my working data folder 'Data'
+write_csv(LOS_dictionary, here("RawData", "LOS_CollectedData_DataDictionary.csv"))
+```
+### Append data dictionary to the CollectedData
+As metadata, I now incorporate attributes to the LOS_CollectedData using the ‘incorporate_attr()’ function from the dataMeta package. The function requires the LOS_CollectedData and dictionary and main_string main_string as inputs.
+```{r l,message = FALSE, warning = FALSE}
+main_string <- "This data describes the NHS Hospital length of stay (LOS)
+data set (LOS_model) from the *NHSRdatasets* package collected by the data capture tool."
+main_string #Create main_string for attributes
+```
+## Incorporate attributes as metada
+```{r m,message = FALSE, warning = FALSE}
+#I use the ‘incorporate_attr()’ function to return an R dataset containing metadata stored in its attributes. The attributes include: a data dictionary, number of columns, number of rows, the name of the author and added it, the time when it was last edited, a brief description 
+LOS_complete_CollectedData <- incorporate_attr(my.data = LOS_CollectedData, data.dictionary = LOS_dictionary,main_string = main_string)
+#Change the author name
+attributes(LOS_complete_CollectedData)$author[1]<-"B210624"
+LOS_complete_CollectedData
 ```
 
-
-### Let's save provisional subsetted ae_attendances data to the 'RawData' folder
-It is important to save the collected data. I name this file "los_age_data", and write it to the raw data folder.
-```{r w,message = FALSE, warning = FALSE}
-glimpse(los)
-write_csv(los, here("RawData", "los_age_data.csv"))
+```{r n,message = FALSE, warning = FALSE}
+attributes(LOS_complete_CollectedData)
 ```
 
-## Separating provisional los_age_data into training and testing sets
-For developing and evaluating my data capture tool, I need  to splint the raw data into test and training data sets.
-
-### How many rows are in the los_age_data dataset?
-```{r x,message = FALSE, warning = FALSE}
-#The los_age_data is large with 
-los_age_data<-los
-nrow(los_age_data) #rows of data
-
+```{r o,message = FALSE, warning = FALSE}
+save_it(LOS_complete_CollectedData, here("RawData", "LOS_complete_CollectedData"))
+#I use the ‘save_it()’ function to save the LOS_CollectedData with attributes stored
+# as metadata as an R dataset (.rds) into the ‘current working directory’RawData’ folder.
+LOS_complete_CollectedData<-readRDS(here("RawData","LOS_complete_CollectedData.rds"))
+# Here is the end of the process of Synthesis.
 ```
-
-Here shows the proportion (`prop`) of the raw data to assign to the training data:
-```{r y,message = FALSE, warning = FALSE}
-prop<-(1-(15/nrow(los_age_data)))
-#The proportion of the raw that needs to be assigned to the training data to ensure there is only 10 to 15 records in the test data is: 
-print(prop)
-```
-I use the createDataPartition() function from the *caret* package to splint our raw data into test and training data sets.
-The 'set.seed()' function is a random number generator, which is useful for creating random objects that can be reproduced. 
-
-```{r z,message = FALSE, warning = FALSE}
-#the raw data into the same test and training data.
-set.seed(333)
-#Partitioning the raw data into the test and training data.
-trainIndex_los<- createDataPartition(los_age_data$ID, p = prop, 
-                                  list = FALSE, 
-                                  times = 1)
-
-# All records that are in the trainIndex are assigned to the training data.
-los_age_Train <- los_age_data[trainIndex_los,]
-nrow(los_age_Train)
-```
-There are 288 records in your training data. 
-
-### Our next task, it to save ae_attendances_ENG_4hr_perfom training data to your working data folder 'Data'
-```{r ab,message = FALSE, warning = FALSE}
-write_csv(los_age_Train, here("Data", "los_age_train.csv"))
-```
-
-### Let's extract the ae_attendances_ENG_4hr_perfom test data
-#All records that are not in the trainIndex (`-trainIndex`) are assigned to the test data.
-```{r ac,message = FALSE, warning = FALSE}
-los_age_Test <- los_age_data[-trainIndex_los,]
-nrow(los_age_Test)
-```
-There are 12 records in my test data. I now need to set aside the first record from the los_age_test  so that my markers can test and evaluate your data-capture tool.
-```{r ad,message = FALSE, warning = FALSE}
-los_age_TestMarker  <- los_age_Test[1,]
-```
-
-### Our next task, it to save our ae_attendances_ENG_4hr_perfom marker test data to our working data folder 'Data'
-```{r af,message = FALSE, warning = FALSE}
-write_csv(los_age_TestMarker, here("Data", "los_age_TestMarker.csv"))
-```
-
-### We then need to set aside the remaining records for you to test (or collect with your) your data-capture tool.
-```{r ag,message = FALSE, warning = FALSE}
-losTest  <- los_age_Test[2:nrow(los_age_Test),]
-```
-
-## Our final task, is to save our ae_attendances_ENG_4hr_perfom test data to our working data folder 'Data'
-```{r ai,message = FALSE, warning = FALSE}
-write_csv(losTest, here("Data", "los_test.csv"))
-```
-
-
-I ended my coding here.
-
-

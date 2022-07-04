@@ -1,0 +1,211 @@
+---
+title: '**Descriptive Report**'
+author: "B210624"
+date: "`r format (Sys.time (), '%d %B, %Y')`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+[My assessment repository:](https://github.com/B210624/B210624_Working_with_data_types_and_structures_in_Python_and_R.git)# https://github.com/B210624/B210624_Working_with_data_types_and_structures_in_Python_and_R.git
+## Load packages and data
+Let’s load the packages and data needed for this script....
+```{r a,message = FALSE, warning = FALSE}
+library(tidyverse) #The *tidyverse* is a collection of R packages designed for  maniplating dataset..
+library(here) #The *here* package is for easy filing in project-centered workflows.
+library(knitr) #*knitr* is an R package that integrates code into text documents.
+library(scales)#*lubridate* provides tools that make it easier to manipulate dates in R. 
+library(caret)# caret is a set of functions that attempt to streamline the process for creating predictive models.
+```
+# **Overview**
+In this assignment, I will use and load the Hospital length of stay (LOS) data (LOS_model) from the NHSRdatasets package. I will shortly see, investigate and tabulate the NHS Hospital length of stay (LOS) data set and save it to my RawData folder. I will search variable for later research as indicators for length of stay in hospital. Background: The data are csv.files from the NHSRdatasets package forskills development.
+Hospital length of stay (LOS) data (LOS_model): Artificially generated hospital data. Fictional patients at ten fictional hospitals, with LOS, age and date status data. 
+
+# **NHSRdatasets(Creation)**
+```{r b,message = FALSE, warning = FALSE}
+library(NHSRdatasets)
+```
+# **Store the NHS Hospital length of stay (LOS) data set (Storage)**
+```{r c,message = FALSE, warning = FALSE}
+data(LOS_model) #Load the LOS_model data.
+write_csv(LOS_model, here("RawData", "los.csv")) 
+#Here is the code to store theNHS Hospital length of stay (LOS) data set.
+```
+## Load the NHS Hospital length of stay (LOS) data set. Here is start of Synthesis
+```{r d,message = FALSE, warning = FALSE}
+LOS_CollectedData=read_csv(here("RawData", "los.csv"))
+# I load the NHS Hospital length of stay (LOS) data (LOS_model) from RawData folder.
+glimpse(LOS_CollectedData) #The `glimpse()` function is good to see the columns/variables in a data frame and show data type.
+class(LOS_CollectedData)#Look at the data class
+head(LOS_CollectedData)#Look at data on the top 
+tail(LOS_CollectedData)#Look at data on the bottom  
+```
+## Overview of my dataset of NHS Hospital length of stay (LOS) data (LOS_model)
+I can see the los tibble consists of 300 rows of data and 5 columns with different classes. I have one order variable and four integer variables (or factors).
+The dataset contains:     
+* **ID:** All patients who stay in hospital has individual ID.  
+*	**Organisation:** the Organisation is the fictional hospita; where the patients stay. 
+*	**Age:** Age is patient age which is numeric data type and integer by using class 
+* **Length of stay (LOS) :** the length of stay in hospital means how many days patients stay in hospital.    
+*	**Death:** Death means the number of death in hospital.   
+
+## Missing data
+```{r e,message = FALSE, warning = FALSE}
+#Calculate how many NAs there are in each variable.
+LOS_CollectedData %>% map(is.na) %>%
+map(sum) # 'map()' is a function for applying a function to each element of a list.
+#The 'is.na' function produces a matrix, consisting of logical values.
+```
+The data is complete. I do not need to worry about manipulating missing data. 
+
+## Let's tablulate the raw data for your report
+```{r p,message = FALSE, warning = FALSE}
+LOS_CollectedData %>%
+  # Set the numeric columns to have a comma at the 1000's place
+  mutate_at(vars(LOS, Age, Death), comma) %>%
+  # Show the first 10 rows
+  head(10) %>%
+  # Format as a table
+  kable()
+```
+
+## Let's save the raw LOS_CollectedData to your 'RawData' folder
+```{r q,message = FALSE, warning = FALSE}
+write_csv(LOS_CollectedData, here("RawData", "LOS_CollectedData.csv"))
+```
+
+# **Selecting variables for your data capture tool**
+```{r r,message = FALSE, warning = FALSE}
+LOS_CollectedData_parameters<-LOS_CollectedData%>% select(ID, Organisation, Age, LOS)
+```
+
+## Let's tablulate the raw data for your report
+```{r s,message = FALSE, warning = FALSE}
+LOS_CollectedData_parameters%>%
+  # Set the numeric columns to have a comma at the 1000's place
+  mutate_at(vars(LOS, Age), comma) %>%
+  # Show the first 10 rows
+  head(10) %>%
+  # Format as a table
+  kable()
+```
+
+### Let's visualise the relationship between LOS and Age before we save or raw data file.
+```{r u,message = FALSE, warning = FALSE}
+ggplot(LOS_CollectedData_parameters, aes(x=Age, y=LOS))  +
+  facet_wrap(~Organisation, nrow=2)+
+  geom_point() + geom_smooth() +
+  labs(x = "Age",
+       y = "LOS",
+       title = "NHS Hospital length of stay (LOS) data set",
+       caption = "Source: NHSRdatasets")
+```
+
+## Let's tablulate the raw data for your report
+```{r v,message = FALSE, warning = FALSE}
+LOS_CollectedData_parameters %>%
+  # Set the numeric columns to have a comma at the 1000's place
+  mutate_at(vars(LOS, Age), comma) %>%
+  # Show the first 10 rows
+  head(10) %>%
+  # Format as a table
+  kable()
+```
+
+### Let's save provisional subsetted LOS_CollectedData to the 'RawData' folder
+```{r w,message = FALSE, warning = FALSE}
+glimpse(LOS_CollectedData_parameters)
+write_csv(LOS_CollectedData_parameters, here("RawData", "LOS_CollectedData_parameters.csv"))
+```
+
+## Separating provisional ae_attendances_ENG_4hr_perfom data into training and testing sets
+### How many rows are in the LOS_CollectedData?
+```{r x,message = FALSE, warning = FALSE}
+#The ae_attendances_ENG_4hr_perfom dataset is large with 
+nrow(LOS_CollectedData_parameters) #rows of data
+```
+
+```{r y,message = FALSE, warning = FALSE}
+LOS_prop<-(1-(15/nrow(LOS_CollectedData_parameters)))
+#The proportion of the raw that needs to be assigned to the training data to ensure there is only 10 to 15 records in the test data is: 
+print(LOS_prop)
+```
+##I use the createDataPartition() function from the *caret* package to splint our raw data into test and training data sets.
+```{r z,message = FALSE, warning = FALSE}
+set.seed(333)
+#Partitioning the raw data into the test and training data.
+LOS_trainIndex <- createDataPartition(LOS_CollectedData_parameters$ID, p = LOS_prop, 
+                                  list = FALSE, 
+                                  times = 1)
+head(LOS_trainIndex)
+# All records that are in the trainIndex are assigned to the training data.
+LOS_Train <- LOS_CollectedData_parameters[ LOS_trainIndex,]
+nrow(LOS_Train)
+```
+There are 288 records in my training data. 
+
+### Let's tabulate LOS_CollectedData_parameters training data for your report
+```{r aa,message = FALSE, warning = FALSE}
+LOS_Train %>%
+  # set the numeric columns to have a comma at the 1000's place
+  mutate_at(vars(LOS, Age), comma) %>%
+  # show the first 10 rows
+  head(10) %>%
+  # format as a table
+  kable()
+  ```
+  
+### Our next task, it to save LOS_CollectedData_parameters training data to your working data folder 'Data'
+```{r ab,message = FALSE, warning = FALSE}
+write_csv(LOS_Train, here("Data", "LOS_CollectedData_parameters_train.csv"))
+```
+
+### Let's extract the LOS_CollectedData_parameters test data
+#All records that are not in the LOS_trainIndex (`-trainIndex`) are assigned to the test data.
+```{r ac,message = FALSE, warning = FALSE}
+LOS_Test  <- LOS_CollectedData_parameters[-LOS_trainIndex,]
+nrow(LOS_Test)
+```
+There are 12 records in my test data.
+```{r ad,message = FALSE, warning = FALSE}
+LOS_TestMarker  <- LOS_Test[1,]
+```
+#### Let's tabulate LOS_CollectedData_parameters marker test data for your report
+```{r ae,message = FALSE, warning = FALSE}
+LOS_TestMarker  %>%
+  # set the numeric columns to have a comma at the 1000's place
+  mutate_at(vars(LOS, Age), comma) %>%
+  # show the first 10 rows
+  head(10) %>%
+  # format as a table
+  kable()
+```
+### Our next task, it to save my LOS_CollectedData_parametersmarker test data to our working data folder 'Data'
+```{r af,message = FALSE, warning = FALSE}
+write_csv(LOS_TestMarker, here("Data", "LOS_CollectedData_parameters_test_marker.csv"))
+```
+
+### We then need to set aside the remaining records for me to test (or collect with my) mydata-capture tool.
+```{r ag,message = FALSE, warning = FALSE}
+LOS_Test  <- LOS_Test[2:nrow(LOS_Test),]
+```
+#### Let's tabulate LOS_CollectedData_parameters test data for your report
+```{r ah,message = FALSE, warning = FALSE}
+LOS_Test  %>%
+  # set the numeric columns to have a comma at the 1000's place
+  mutate_at(vars(LOS, Age), comma) %>%
+  # show the first 10 rows
+  head(10) %>%
+  # format as a table
+  kable()
+```
+
+### Our final task, is to save my LOS_CollectedData_parameters test data to our working data folder 'Data'
+```{r ai,message = FALSE, warning = FALSE}
+write_csv(LOS_Test, here("Data", "LOS_test.csv"))
+```
+
+

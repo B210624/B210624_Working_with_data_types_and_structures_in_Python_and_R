@@ -156,7 +156,7 @@ LOS_Train %>%
   head(10) %>%
   # format as a table
   kable()
-  ```
+```
   
 ### Our next task, it to save LOS_CollectedData_parameters training data to your working data folder 'Data'
 ```{r ab,message = FALSE, warning = FALSE}
